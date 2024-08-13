@@ -2,13 +2,9 @@ package com.jindoblu.bubblemazeadventure.presentation.activity.main.shop
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.PrimaryKey
 import com.jindoblu.bubblemazeadventure.data.local.shared.SharedServices
 import com.jindoblu.bubblemazeadventure.repository.room.BallsRepository
 import com.jindoblu.bubblemazeadventure.repository.room.WallPapersRepository
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

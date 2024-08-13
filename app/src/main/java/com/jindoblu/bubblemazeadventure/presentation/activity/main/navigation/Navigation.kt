@@ -1,14 +1,11 @@
 package com.jindoblu.bubblemazeadventure.presentation.activity.main.navigation
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key.Companion.Menu
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,10 +15,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.jindoblu.bubblemazeadventure.presentation.activity.main.screens.game.Game
 import com.jindoblu.bubblemazeadventure.presentation.activity.main.screens.menu.Menu
-import com.jindoblu.bubblemazeadventure.presentation.activity.main.screens.settings.Settings
 import com.jindoblu.bubblemazeadventure.presentation.activity.main.shop.ShopScreen
 import com.jindoblu.bubblemazeadventure.ui.OnLifecycleEvent
-import kotlin.random.Random
 
 
 @Composable
@@ -60,9 +55,7 @@ fun MainActivityNavigation(modifier: Modifier) {
                     viewModule.pauseGlobalSound()
                     navController.navigate(NavigationState.GAME.name)
                 },
-                openSettings = {
-                    navController.navigate(NavigationState.SETTINGS.name)
-                }, shop = {
+                shop = {
                     navController.navigate(NavigationState.SHOP.name)
                 })
         }
@@ -89,18 +82,6 @@ fun MainActivityNavigation(modifier: Modifier) {
                     viewModule.resumeGlobalSound()
                 })
         }
-//        composable(NavigationState.SETTINGS.name) {
-//            Settings({
-//                navController.navigate(NavigationState.MENU.name)
-//            }, soundOnOff = { isSound ->
-//                Log.e("Test", "Sound: $isSound")
-//                if (isSound) {
-//                    viewModule.resumeGlobalSound()
-//                } else {
-//                    viewModule.pauseGlobalSound()
-//                }
-//            })
-//        }
     }
 }
 

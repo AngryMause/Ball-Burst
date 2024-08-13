@@ -1,7 +1,5 @@
 package com.jindoblu.bubblemazeadventure.presentation.activity.main.screens.menu
 
-import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,10 +23,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.LifecycleStartEffect
 
 @Composable
-fun Menu(openGame: () -> Unit, openSettings: () -> Unit, shop: () -> Unit) {
+fun Menu(openGame: () -> Unit, shop: () -> Unit) {
     val viewModel = hiltViewModel<MenuViewModel>()
     var score by remember {
         mutableIntStateOf(0)
@@ -68,13 +65,6 @@ fun Menu(openGame: () -> Unit, openSettings: () -> Unit, shop: () -> Unit) {
             ) {
                 Text("Shop", color = Color.Black)
             }
-//            Button(
-//                onClick = openSettings,
-//                modifier = Modifier.size(120.dp, 40.dp),
-//                colors = ButtonDefaults.buttonColors().copy(Color.Cyan.copy(alpha = 0.5f))
-//            ) {
-//                Text("Settings", color = Color.Black)
-//            }
         }
     }
 

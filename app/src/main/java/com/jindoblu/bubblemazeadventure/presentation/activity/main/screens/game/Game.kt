@@ -55,12 +55,10 @@ fun Game(goBack: () -> Unit) {
     var scor by remember { mutableIntStateOf(0) }
     var isGameStarted by remember { mutableStateOf(false) }
     LifecycleStartEffect(key1 = Unit) {
-        Log.e("Game", "onStart")
         onStopOrDispose {
             viewModel.stopGameSound()
             if (scor <= 0) return@onStopOrDispose
             viewModel.saveScore(scor)
-            Log.e("Game", "onStopOrDispose")
         }
     }
     OnLifecycleEvent { _, event ->
@@ -72,7 +70,6 @@ fun Game(goBack: () -> Unit) {
             Lifecycle.Event.ON_PAUSE -> {
                 viewModel.pauseGameSound()
             }
-
 
             else -> Unit
         }

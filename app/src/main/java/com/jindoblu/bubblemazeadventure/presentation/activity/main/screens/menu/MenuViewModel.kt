@@ -9,8 +9,5 @@ import javax.inject.Inject
 class MenuViewModel @Inject constructor(
     private val sharedServices: SharedServices
 ):ViewModel() {
-
     fun getScore() = sharedServices.getScore()
-
-
 }

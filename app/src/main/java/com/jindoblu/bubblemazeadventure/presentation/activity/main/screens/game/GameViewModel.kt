@@ -44,9 +44,7 @@ class GameViewModel @Inject constructor(
     }
 
     fun playGameSound() {
-//        if (sharedServices.getSound()) {
-            gameMusicManager.playGameSound()
-//        }
+        gameMusicManager.playGameSound()
     }
 
     fun stopGameSound() {
