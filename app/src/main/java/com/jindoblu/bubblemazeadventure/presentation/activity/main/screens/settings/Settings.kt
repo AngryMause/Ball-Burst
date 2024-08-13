@@ -79,16 +79,6 @@ fun Settings(goBack: () -> Unit, soundOnOff: (boolean: Boolean) -> Unit) {
             }
         }
 
-        if (onShowInfo) {
-            ScreenAlert(
-                modifier = Modifier
-                    .align(Alignment.Center),
-                onHide = { onShowInfo = false },
-                text = stringResource(id = R.string.settings_screen_info)
-            )
-        }
-
-
         Icon(imageVector = Icons.Filled.Info,
             contentDescription = "Screen Info",
             modifier = Modifier

@@ -5,4 +5,6 @@ interface GlobalSoundManager {
     fun stopGlobalSound()
     fun pauseGlobalSound()
     fun resumeGlobalSound()
+    fun restartGlobalSound()
+    fun isGameSoundPlaying(): Boolean
 }

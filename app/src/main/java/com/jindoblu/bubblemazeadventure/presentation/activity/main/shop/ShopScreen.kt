@@ -1,5 +1,6 @@
 package com.jindoblu.bubblemazeadventure.presentation.activity.main.shop
 
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
@@ -26,6 +27,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -61,6 +63,9 @@ fun ShopScreen(back: () -> Unit, soundOnOff: (boolean: Boolean) -> Unit) {
     var onShowInfo by remember { mutableStateOf(false) }
     val context = LocalContext.current
     var isSoundOn by remember { mutableStateOf(viewModel.isSoundOn()) }
+    LaunchedEffect(key1 = null) {
+        isSoundOn = viewModel.isSoundOn()
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -85,8 +90,8 @@ fun ShopScreen(back: () -> Unit, soundOnOff: (boolean: Boolean) -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .padding(10.dp)
-                .align(Alignment.CenterStart)
-                .padding(top = 30.dp),
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 30.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally)
         ) {
             Text(
@@ -102,9 +107,9 @@ fun ShopScreen(back: () -> Unit, soundOnOff: (boolean: Boolean) -> Unit) {
                 painter = painterResource(id = if (isSoundOn) R.drawable.baseline_volume_up_24 else R.drawable.baseline_volume_off_24),
                 contentDescription = "Sound on off ",
                 modifier = Modifier.clickable {
+                    Log.e("Test", "ShopScreen: isSoundOn $isSoundOn")
                     isSoundOn = !isSoundOn
                     soundOnOff(isSoundOn)
-                    viewModel.saveSound(isSoundOn)
                 }
             )
         }
@@ -113,15 +118,29 @@ fun ShopScreen(back: () -> Unit, soundOnOff: (boolean: Boolean) -> Unit) {
         } else {
             Column(
                 modifier = Modifier
-                    .padding(6.dp)
-                    .fillMaxHeight(0.6f)
+                    .padding(top = 70.dp, start = 6.dp, end = 6.dp)
+                    .fillMaxHeight(0.8f)
                     .border(3.dp, Color.Black, BackGroundShape)
-                    .align(Alignment.Center)
+                    .background(color = Color.Unspecified.copy(alpha = 0.4f))
+                    .align(Alignment.TopStart)
+
+
             ) {
+                Text(
+                    text = "Levels",
+                    fontSize = 30.sp,
+                    color = Color.White,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
                 LazyColumn(
                     modifier = Modifier
+                        .padding(10.dp)
+                        .fillMaxHeight(0.4f)
                         .fillMaxWidth()
-                        .fillMaxHeight(0.3f)
+                        .border(3.dp, Color.Black, BackGroundShape)
+
                 ) {
                     items(ballsList.value.size) { index ->
                         BallListItem(ballsList.value[index], level = index + 1, onBay = {
@@ -136,12 +155,19 @@ fun ShopScreen(back: () -> Unit, soundOnOff: (boolean: Boolean) -> Unit) {
                         })
                     }
                 }
-
+                Text(
+                    text = "Wallpapers",
+                    fontSize = 30.sp,
+                    color = Color.White,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp)
-                        .padding(top = 60.dp)
+                        .border(3.dp, Color.Black, BackGroundShape)
                 ) {
                     items(wallpaperList.value.size) { index ->
                         WallpaperItem(wallpaperList.value[index], onBay = {

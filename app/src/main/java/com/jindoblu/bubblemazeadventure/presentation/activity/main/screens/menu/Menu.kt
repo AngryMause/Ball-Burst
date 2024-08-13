@@ -29,24 +29,16 @@ import androidx.lifecycle.compose.LifecycleStartEffect
 
 @Composable
 fun Menu(openGame: () -> Unit, openSettings: () -> Unit, shop: () -> Unit) {
-    LifecycleStartEffect(key1 = Unit) {
-        Log.e("Menu", "onStart")
-        onStopOrDispose {
-            Log.e("Menu", "onStopOrDispose")
-        }
-    }
     val viewModel = hiltViewModel<MenuViewModel>()
     var score by remember {
         mutableIntStateOf(0)
     }
     LaunchedEffect(key1 = null) {
         score = viewModel.getScore()
-
     }
     Box(
         modifier = Modifier
             .fillMaxSize()
-//            .background(Color.Magenta.copy(alpha = 0.3f)),
     ) {
         Text(
             text = "Point: $score", modifier = Modifier
@@ -76,13 +68,13 @@ fun Menu(openGame: () -> Unit, openSettings: () -> Unit, shop: () -> Unit) {
             ) {
                 Text("Shop", color = Color.Black)
             }
-            Button(
-                onClick = openSettings,
-                modifier = Modifier.size(120.dp, 40.dp),
-                colors = ButtonDefaults.buttonColors().copy(Color.Cyan.copy(alpha = 0.5f))
-            ) {
-                Text("Settings", color = Color.Black)
-            }
+//            Button(
+//                onClick = openSettings,
+//                modifier = Modifier.size(120.dp, 40.dp),
+//                colors = ButtonDefaults.buttonColors().copy(Color.Cyan.copy(alpha = 0.5f))
+//            ) {
+//                Text("Settings", color = Color.Black)
+//            }
         }
     }
 

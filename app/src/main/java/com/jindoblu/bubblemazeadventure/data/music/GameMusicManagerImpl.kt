@@ -2,6 +2,7 @@ package com.jindoblu.bubblemazeadventure.data.music
 
 import android.content.Context
 import android.media.MediaPlayer
+import android.util.Log
 import com.jindoblu.bubblemazeadventure.R
 import com.jindoblu.bubblemazeadventure.data.local.shared.SharedServices
 import javax.inject.Inject
@@ -19,6 +20,7 @@ class GameMusicManagerImpl @Inject constructor(
     private var gameSoundPosition = 0
 
     override fun playGlobalSound() {
+        Log.e("Test", "playGlobalSound sharedServices.getSound(): ${sharedServices.getSound()}")
         if (!sharedServices.getSound()) return
         if (!globalSound.isPlaying) {
             globalSound.isLooping = true
@@ -33,23 +35,28 @@ class GameMusicManagerImpl @Inject constructor(
     }
 
     override fun pauseGlobalSound() {
-        if (!sharedServices.getSound()) return
+        if (!globalSound.isPlaying) return
         globalSound.currentPosition.also { globalSoundPosition = it }
         globalSound.pause()
     }
 
     override fun resumeGlobalSound() {
-        if (!sharedServices.getSound()) return
+        if (globalSound.isPlaying || !sharedServices.getSound()) return
         globalSound.seekTo(globalSoundPosition)
         globalSound.start()
     }
 
     override fun playGameSound() {
         if (!sharedServices.getSound()) return
+        pauseGlobalSound()
         if (!gameSound.isPlaying) {
             gameSound.isLooping = true
             gameSound.start()
         }
+    }
+
+    override fun isGameSoundPlaying(): Boolean {
+        return gameSound.isPlaying
     }
 
     override fun stopGameSound() {
@@ -62,6 +69,11 @@ class GameMusicManagerImpl @Inject constructor(
         if (!sharedServices.getSound()) return
         gameSound.currentPosition.also { gameSoundPosition = it }
         gameSound.pause()
+    }
+
+    override fun restartGlobalSound() {
+        if (globalSound.isPlaying) return
+        globalSound.release()
     }
 
     override fun resumeGameSound() {

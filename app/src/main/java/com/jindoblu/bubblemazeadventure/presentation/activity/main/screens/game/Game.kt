@@ -58,21 +58,23 @@ fun Game(goBack: () -> Unit) {
         Log.e("Game", "onStart")
         onStopOrDispose {
             viewModel.stopGameSound()
+            if (scor <= 0) return@onStopOrDispose
             viewModel.saveScore(scor)
             Log.e("Game", "onStopOrDispose")
         }
     }
     OnLifecycleEvent { _, event ->
-        when (event){
+        when (event) {
             Lifecycle.Event.ON_START -> {
                 viewModel.playGameSound()
             }
+
             Lifecycle.Event.ON_PAUSE -> {
                 viewModel.pauseGameSound()
             }
 
 
-            else->Unit
+            else -> Unit
         }
         if (event == Lifecycle.Event.ON_STOP) {
             viewModel.saveScore(scor)
@@ -113,7 +115,6 @@ fun Game(goBack: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-//            .background(Color.Magenta.copy(alpha = 0.3f))
     ) {
         Image(
             painter = painterResource(id = gameBallModel.value.image), contentDescription = "Image",

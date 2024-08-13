@@ -1,5 +1,6 @@
 package com.jindoblu.bubblemazeadventure.presentation.activity.main.navigation
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,10 +33,6 @@ fun MainActivityNavigation(modifier: Modifier) {
         when (event) {
             Lifecycle.Event.ON_START -> {
                 viewModule.playGlobalSound()
-            }
-
-            Lifecycle.Event.ON_RESUME -> {
-                viewModule.resumeGlobalSound()
             }
 
             Lifecycle.Event.ON_PAUSE -> {
@@ -73,10 +70,13 @@ fun MainActivityNavigation(modifier: Modifier) {
             ShopScreen(
                 back = {
                     navController.popBackStack()
-                }, soundOnOff = { isSound ->
-                    if (isSound) {
+                }, soundOnOff = { isPlaying ->
+
+                    viewModule.saveSound(isPlaying = isPlaying)
+                    if (isPlaying) {
                         viewModule.resumeGlobalSound()
                     } else {
+
                         viewModule.pauseGlobalSound()
                     }
                 }
@@ -89,17 +89,18 @@ fun MainActivityNavigation(modifier: Modifier) {
                     viewModule.resumeGlobalSound()
                 })
         }
-        composable(NavigationState.SETTINGS.name) {
-            Settings({
-                navController.navigate(NavigationState.MENU.name)
-            }, soundOnOff = { isSound ->
-                if (isSound) {
-                    viewModule.resumeGlobalSound()
-                } else {
-                    viewModule.pauseGlobalSound()
-                }
-            })
-        }
+//        composable(NavigationState.SETTINGS.name) {
+//            Settings({
+//                navController.navigate(NavigationState.MENU.name)
+//            }, soundOnOff = { isSound ->
+//                Log.e("Test", "Sound: $isSound")
+//                if (isSound) {
+//                    viewModule.resumeGlobalSound()
+//                } else {
+//                    viewModule.pauseGlobalSound()
+//                }
+//            })
+//        }
     }
 }
 

@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">Bubble Maze Adventure</string>
-    <string name="settings_screen_info">On this screen. You can choose which ball you want to play with.</string>
-    <string name="shop_screen_info">On this screen. With the help of points you can unlock levels.</string>
+    <string name="shop_screen_info">On this screen. With the help of points, you can open levels, buy new wallpapers and customize the visual.</string>
 </resources>

@@ -57,7 +57,4 @@ class ShopViewModel @Inject constructor(
         return sharedServices.getSound()
     }
 
-    fun saveSound(isPlaying: Boolean) {
-        sharedServices.playSound(isPlaying)
-    }
 }
