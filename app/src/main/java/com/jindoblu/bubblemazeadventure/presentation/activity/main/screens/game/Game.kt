@@ -1,6 +1,5 @@
 package com.jindoblu.bubblemazeadventure.presentation.activity.main.screens.game
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -8,7 +7,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,6 +46,7 @@ import com.jindoblu.bubblemazeadventure.ui.toPx
 
 const val BALL_SIZE = 50
 
+//TODO #2 check correct ball animation
 @Composable
 fun Game(goBack: () -> Unit) {
     val viewModel = hiltViewModel<GameViewModel>()
@@ -57,14 +56,13 @@ fun Game(goBack: () -> Unit) {
     LifecycleStartEffect(key1 = Unit) {
         onStopOrDispose {
             viewModel.stopGameSound()
-            if (scor <= 0) return@onStopOrDispose
             viewModel.saveScore(scor)
         }
     }
     OnLifecycleEvent { _, event ->
         when (event) {
-            Lifecycle.Event.ON_START -> {
-                viewModel.playGameSound()
+            Lifecycle.Event.ON_RESUME -> {
+                viewModel.resumeGameSound()
             }
 
             Lifecycle.Event.ON_PAUSE -> {
@@ -72,9 +70,6 @@ fun Game(goBack: () -> Unit) {
             }
 
             else -> Unit
-        }
-        if (event == Lifecycle.Event.ON_STOP) {
-            viewModel.saveScore(scor)
         }
     }
     var ballModel by remember {
@@ -113,29 +108,7 @@ fun Game(goBack: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Image(
-            painter = painterResource(id = gameBallModel.value.image), contentDescription = "Image",
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier
-                .padding(top = 50.dp)
-                .offset {
-                    ballModel.offset
-                }
-                .graphicsLayer {
-                    if (ballModel.isScaled && isGameStarted) {
-                        scaleX = scaleAnimation.value
-                        scaleY = scaleAnimation.value
-                    }
-                    alpha = visibilityAnimation.value
-                }
-                .clip(CircleShape)
-                .size(BALL_SIZE.dp)
-                .clickable(enabled = isGameStarted && ballModel.life >= 0) {
-                    if (visibilityAnimation.value <= 0.45f) return@clickable
-                    scor += 1
-                    viewModel.setBallState()
-                }
-        )
+
 
         if (!isGameStarted) {
             Icon(
@@ -148,8 +121,34 @@ fun Game(goBack: () -> Unit) {
                     .clickable {
                         isGameStarted = true
                         viewModel.startGame()
+                        viewModel.playGameSound()
                     },
                 tint = Color.Magenta
+            )
+        } else {
+            Image(
+                painter = painterResource(id = gameBallModel.value.image),
+                contentDescription = "Image",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .padding(top = 50.dp)
+                    .offset {
+                        ballModel.offset
+                    }
+                    .graphicsLayer {
+                        if (ballModel.isScaled && isGameStarted) {
+                            scaleX = scaleAnimation.value
+                            scaleY = scaleAnimation.value
+                        }
+                        alpha = visibilityAnimation.value
+                    }
+                    .clip(CircleShape)
+                    .size(BALL_SIZE.dp)
+                    .clickable(enabled = isGameStarted && ballModel.life >= 0) {
+                        if (visibilityAnimation.value <= 0.45f) return@clickable
+                        scor += 1
+                        viewModel.setBallState()
+                    }
             )
         }
         TopGameBar(
@@ -158,7 +157,7 @@ fun Game(goBack: () -> Unit) {
                 .fillMaxWidth(),
             level = 2,
             ballImage = ballModel.image,
-            scor = scor,
+            score = scor,
             ballLife = ballModel.life
         )
     }

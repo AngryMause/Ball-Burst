@@ -30,10 +30,12 @@ class GameViewModel @Inject constructor(
         }
     }
 
+    // TODO #1 fix ppoint update
     fun saveScore(score: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            val tempScore = sharedServices.getScore() + score
-            sharedServices.saveScore(tempScore / 5) // every 5 score give 1 point
+            if (score <= 4) return@launch
+            val tempScore = score / 5
+            sharedServices.saveScore(sharedServices.getScore() + tempScore) // every 5 score give 1 point
         }
     }
 

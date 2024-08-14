@@ -19,7 +19,7 @@ import com.jindoblu.bubblemazeadventure.ui.theme.BackGroundShape
 @Composable
 fun TopGameBar(
     modifier: Modifier = Modifier,
-    scor: Int = 0,
+    score: Int = 0,
     level: Int = 1,
     ballImage: Int,
     ballLife: Int
@@ -30,7 +30,7 @@ fun TopGameBar(
             .padding(10.dp)
     ) {
         Text(
-            text = "Score: $scor",
+            text = "Score: $score",
             color = Color.Black,
             modifier = Modifier
                 .background(Color.Magenta.copy(0.3f), BackGroundShape)

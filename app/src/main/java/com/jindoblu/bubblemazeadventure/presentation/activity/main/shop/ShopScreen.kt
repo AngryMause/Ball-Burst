@@ -46,9 +46,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.jindoblu.bubblemazeadventure.R
 import com.jindoblu.bubblemazeadventure.data.model.room.BallsModel
 import com.jindoblu.bubblemazeadventure.data.model.room.WalPapersModel
+import com.jindoblu.bubblemazeadventure.presentation.AcceptAlert
 import com.jindoblu.bubblemazeadventure.presentation.ScreenAlert
 import com.jindoblu.bubblemazeadventure.ui.theme.BackGroundShape
 import com.jindoblu.bubblemazeadventure.ui.theme.ScreenNameTextStale
+
+data class OnBay(var index: Int = 0, var onShow: Boolean = false, var isWallpaper: Boolean = false)
 
 @Composable
 fun ShopScreen(back: () -> Unit, soundOnOff: (boolean: Boolean) -> Unit) {
@@ -61,6 +64,7 @@ fun ShopScreen(back: () -> Unit, soundOnOff: (boolean: Boolean) -> Unit) {
     var onShowInfo by remember { mutableStateOf(false) }
     val context = LocalContext.current
     var isSoundOn by remember { mutableStateOf(viewModel.isSoundOn()) }
+    var onShowAlert by remember { mutableStateOf(OnBay()) }
     LaunchedEffect(key1 = null) {
         isSoundOn = viewModel.isSoundOn()
     }
@@ -97,7 +101,7 @@ fun ShopScreen(back: () -> Unit, soundOnOff: (boolean: Boolean) -> Unit) {
                 modifier = Modifier
                     .padding(10.dp)
                     .align(Alignment.CenterVertically),
-                textAlign = androidx.compose.ui.text.style.TextAlign.Start,
+                textAlign = TextAlign.Start,
                 fontSize = 20.sp,
                 color = Color.Black
             )
@@ -142,14 +146,11 @@ fun ShopScreen(back: () -> Unit, soundOnOff: (boolean: Boolean) -> Unit) {
                 ) {
                     items(ballsList.value.size) { index ->
                         BallListItem(ballsList.value[index], level = index + 1, onBay = {
-                            if (points >= ballsList.value[index].price) {
-                                points -= ballsList.value[index].price
-                                viewModel.byBall(index)
-                                viewModel.saveNewPoint(points)
-                            } else {
-                                Toast.makeText(context, "Not enough points", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
+                            onShowAlert = OnBay(index = index, onShow = true, isWallpaper = false)
+                        }, onSelect = {
+                            viewModel.saveSelectedBall(index)
+                            Toast.makeText(context, "Level Selected", Toast.LENGTH_SHORT)
+                                .show()
                         })
                     }
                 }
@@ -169,17 +170,63 @@ fun ShopScreen(back: () -> Unit, soundOnOff: (boolean: Boolean) -> Unit) {
                 ) {
                     items(wallpaperList.value.size) { index ->
                         WallpaperItem(wallpaperList.value[index], onBay = {
-                            if (points >= wallpaperList.value[index].price) {
-                                points -= wallpaperList.value[index].price
-                                viewModel.byWallpaper(index)
+                            onShowAlert = OnBay(index = index, onShow = true, isWallpaper = true)
+                        }, onSelect = {
+                            viewModel.saveSelectedWallpaper(index)
+                        })
+                    }
+                }
+            }
+        }
+
+        if (onShowAlert.onShow) {
+            if (!onShowAlert.isWallpaper) {
+                AcceptAlert(
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .fillMaxHeight(0.4f)
+                        .align(Alignment.Center),
+                    onHide = {
+                        if (it) {
+                            if (points >= ballsList.value[onShowAlert.index].price) {
+                                points -= ballsList.value[onShowAlert.index].price
+                                viewModel.byBall(onShowAlert.index)
                                 viewModel.saveNewPoint(points)
                             } else {
                                 Toast.makeText(context, "Not enough points", Toast.LENGTH_SHORT)
                                     .show()
                             }
-                        }, onSelect = { viewModel.saveSelectedWallpaper(index) })
-                    }
-                }
+                            onShowAlert = OnBay(index = -1, onShow = false)
+                        } else {
+                            onShowAlert = OnBay(index = -1, onShow = false)
+                        }
+                    },
+                    text = "You are what to unlock this level?"
+                )
+            } else {
+                AcceptAlert(
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .fillMaxHeight(0.4f)
+                        .align(Alignment.Center),
+                    onHide = {
+                        if (!it) {
+                            onShowAlert = OnBay(index = -1, onShow = false)
+                        } else {
+                            if (points >= wallpaperList.value[onShowAlert.index].price) {
+                                points -= wallpaperList.value[onShowAlert.index].price
+                                viewModel.byWallpaper(onShowAlert.index)
+                                viewModel.saveNewPoint(points)
+                                onShowAlert = OnBay(index = -1, onShow = false)
+                            } else {
+
+                                Toast.makeText(context, "Not enough points", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        }
+                    },
+                    text = "You are what to unlock this wallpaper?"
+                )
             }
         }
         if (onShowInfo) {
@@ -207,14 +254,19 @@ fun ShopScreen(back: () -> Unit, soundOnOff: (boolean: Boolean) -> Unit) {
     }
 }
 
-
 @Composable
-fun BallListItem(ball: BallsModel, level: Int, onBay: () -> Unit) {
+fun BallListItem(ball: BallsModel, level: Int, onBay: () -> Unit, onSelect: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp)
             .background(Color.Magenta.copy(alpha = 0.3f))
+            .clickable(enabled = ball.isBay) {
+                if (!ball.isBay) {
+                    onBay()
+                }
+
+            }
     ) {
         Text(
             text = if (ball.price <= 0) "" else "price: ${ball.price}",
@@ -237,7 +289,10 @@ fun BallListItem(ball: BallsModel, level: Int, onBay: () -> Unit) {
             modifier = Modifier
                 .padding(20.dp)
                 .size(40.dp)
-                .align(Alignment.Center),
+                .align(Alignment.Center)
+                .clickable(enabled = ball.isBay) {
+                    onSelect()
+                },
             colorFilter = if (!ball.isBay) ColorFilter.tint(Color.Gray) else null
         )
 
@@ -250,7 +305,9 @@ fun BallListItem(ball: BallsModel, level: Int, onBay: () -> Unit) {
                     .size(30.dp)
                     .align(Alignment.Center)
                     .clickable {
-                        onBay()
+                        if (!ball.isBay) {
+                            onBay()
+                        }
                     },
                 colorFilter = ColorFilter.tint(Color.Gray)
             )
@@ -260,11 +317,16 @@ fun BallListItem(ball: BallsModel, level: Int, onBay: () -> Unit) {
 
 @Composable
 fun WallpaperItem(wallpaper: WalPapersModel, onBay: () -> Unit, onSelect: () -> Unit) {
-    Row(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp)
             .background(Color.Magenta.copy(alpha = 0.3f))
+            .clickable {
+                if (!wallpaper.isBay) {
+                    onBay()
+                }
+            }
             .horizontalScroll(rememberScrollState())
     ) {
         Text(
@@ -278,11 +340,10 @@ fun WallpaperItem(wallpaper: WalPapersModel, onBay: () -> Unit, onSelect: () -> 
             modifier = Modifier
                 .padding(20.dp)
                 .size(40.dp)
+                .align(Alignment.Center)
                 .clickable(enabled = wallpaper.isBay) {
                     onSelect()
                 },
-
-//                .align(Alignment.Center),
             colorFilter = if (!wallpaper.isBay) ColorFilter.tint(Color.Gray.copy(alpha = 0.4f)) else null
         )
 
@@ -293,9 +354,11 @@ fun WallpaperItem(wallpaper: WalPapersModel, onBay: () -> Unit, onSelect: () -> 
                 modifier = Modifier
                     .padding(20.dp)
                     .size(30.dp)
-//                    .align(Alignment.Center)
+                    .align(Alignment.Center)
                     .clickable {
-                        onBay()
+                        if (!wallpaper.isBay) {
+                            onBay()
+                        }
                     },
                 colorFilter = ColorFilter.tint(Color.Gray)
             )

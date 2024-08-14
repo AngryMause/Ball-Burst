@@ -21,7 +21,8 @@ class GameEngin @Inject constructor(
     private var screenHeight = 0
     private var screenWidth = 0
     private var ballCount = 3
-
+    private var updateVelocity = 15
+    private var count = 0
 
     fun setScreenSize(screenWidth: Int, screenHeight: Int) {
         this.screenWidth = screenWidth
@@ -32,7 +33,7 @@ class GameEngin @Inject constructor(
     val ballModel = _ballModel.asStateFlow()
 
     private val _ballState = MutableStateFlow(BallState.UPDATE_INT_OFFSET)
-    val ballState = _ballState.asStateFlow()
+    private val ballState = _ballState.asStateFlow()
     suspend fun getGameBallModel() {
         if (screenWidth == 0 || screenHeight == 0) return
         ballsRepository.getAll().collectLatest {
@@ -57,6 +58,12 @@ class GameEngin @Inject constructor(
                 }
 
                 BallState.DOWNGRADE_INT_OFFSET -> {
+                    if (count <= 10) {
+                        updateVelocity += 5
+                        count = 0
+                    } else {
+                        count++
+                    }
                     downgrade()
                 }
 
@@ -98,8 +105,7 @@ class GameEngin @Inject constructor(
             }
             _ballModel.value = _ballModel.value.copy(
                 offset = IntOffset(
-//                    _ballModel.value.offset.x,
-                    if (_ballModel.value.offset.x >= screenWidth / 2) _ballModel.value.offset.x - 10 else _ballModel.value.offset.x + 10,
+                    _ballModel.value.offset.x,
                     _ballModel.value.offset.y - 50
                 )
             )
@@ -119,8 +125,8 @@ class GameEngin @Inject constructor(
             if (ballState.value == BallState.DOWNGRADE_INT_OFFSET) return
             _ballModel.value = _ballModel.value.copy(
                 offset = IntOffset(
-                    if (_ballModel.value.offset.x >= screenWidth / 2) _ballModel.value.offset.x - 3 else _ballModel.value.offset.x + 3,
-                    _ballModel.value.offset.y + 5
+                    x = _ballModel.value.offset.x,
+                    y = _ballModel.value.offset.y + updateVelocity
                 )
             )
         }

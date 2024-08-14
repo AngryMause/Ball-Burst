@@ -20,7 +20,6 @@ class GameMusicManagerImpl @Inject constructor(
     private var gameSoundPosition = 0
 
     override fun playGlobalSound() {
-        Log.e("Test", "playGlobalSound sharedServices.getSound(): ${sharedServices.getSound()}")
         if (!sharedServices.getSound()) return
         if (!globalSound.isPlaying) {
             globalSound.isLooping = true
