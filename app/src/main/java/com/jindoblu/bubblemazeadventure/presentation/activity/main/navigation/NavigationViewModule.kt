@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jindoblu.bubblemazeadventure.data.local.shared.SharedServices
 import com.jindoblu.bubblemazeadventure.data.music.GlobalSoundManager
-import com.jindoblu.bubblemazeadventure.repository.room.WallPapersRepository
+import com.jindoblu.bubblemazeadventure.data.repository.room.WallPapersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -19,7 +19,7 @@ data class GameBallModel(
             isRotated = false,
             duration = 0,
             offset = IntOffset.Zero,
-            life = 0
+            life = -1
         )
     }
 }

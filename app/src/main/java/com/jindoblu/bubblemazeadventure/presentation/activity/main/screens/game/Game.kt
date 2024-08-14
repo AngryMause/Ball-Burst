@@ -7,8 +7,10 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -37,7 +39,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LifecycleStartEffect
+import com.jindoblu.bubblemazeadventure.presentation.ScreenAlert
 import com.jindoblu.bubblemazeadventure.presentation.activity.main.screens.game.gameelements.TopGameBar
 import com.jindoblu.bubblemazeadventure.presentation.activity.main.screens.game.model.GameBallModel
 import com.jindoblu.bubblemazeadventure.ui.OnLifecycleEvent
@@ -46,18 +48,14 @@ import com.jindoblu.bubblemazeadventure.ui.toPx
 
 const val BALL_SIZE = 50
 
-//TODO #2 check correct ball animation
 @Composable
 fun Game(goBack: () -> Unit) {
     val viewModel = hiltViewModel<GameViewModel>()
     val gameBallModel = viewModel.getGameBallModel.collectAsState()
     var scor by remember { mutableIntStateOf(0) }
     var isGameStarted by remember { mutableStateOf(false) }
-    LifecycleStartEffect(key1 = Unit) {
-        onStopOrDispose {
-            viewModel.stopGameSound()
-            viewModel.saveScore(scor)
-        }
+    var isGameOve by remember {
+        mutableStateOf(false)
     }
     OnLifecycleEvent { _, event ->
         when (event) {
@@ -92,8 +90,20 @@ fun Game(goBack: () -> Unit) {
             repeatMode = RepeatMode.Reverse
         )
     )
+    val rotateAnimation = animateFloatAsState(
+        targetValue = if (ballModel.isRotated && isGameStarted) 360f else 0f,
+        label = "scaleBallAnimation",
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1500, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
 
     LaunchedEffect(key1 = gameBallModel.value.offset.y) {
+        if (gameBallModel.value.life == 0) {
+            isGameOve = true
+        }
         ballModel = gameBallModel.value
     }
     LaunchedEffect(key1 = null) {
@@ -109,7 +119,6 @@ fun Game(goBack: () -> Unit) {
             .fillMaxSize()
     ) {
 
-
         if (!isGameStarted) {
             Icon(
                 Icons.Filled.PlayArrow, contentDescription = "Start game",
@@ -118,6 +127,7 @@ fun Game(goBack: () -> Unit) {
                     .size(60.dp)
                     .clip(CircleShape)
                     .align(Alignment.Center)
+                    .border(3.dp, Color.Magenta, CircleShape)
                     .clickable {
                         isGameStarted = true
                         viewModel.startGame()
@@ -140,6 +150,7 @@ fun Game(goBack: () -> Unit) {
                             scaleX = scaleAnimation.value
                             scaleY = scaleAnimation.value
                         }
+                        rotationX = rotateAnimation.value
                         alpha = visibilityAnimation.value
                     }
                     .clip(CircleShape)
@@ -151,11 +162,27 @@ fun Game(goBack: () -> Unit) {
                     }
             )
         }
+
+        if (isGameOve) {
+            ScreenAlert(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .fillMaxWidth(0.8f)
+                    .fillMaxHeight(0.5f),
+                onHide = {
+                    viewModel.stopGameSound()
+                    viewModel.saveScore(scor)
+                    goBack()
+                },
+                text = "GameOver \n Score: $scor"
+            )
+        }
+
         TopGameBar(
             modifier = Modifier
                 .padding(3.dp)
                 .fillMaxWidth(),
-            level = 2,
+//            level = 2,
             ballImage = ballModel.image,
             score = scor,
             ballLife = ballModel.life

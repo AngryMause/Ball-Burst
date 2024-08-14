@@ -2,7 +2,6 @@ package com.jindoblu.bubblemazeadventure.data.music
 
 import android.content.Context
 import android.media.MediaPlayer
-import android.util.Log
 import com.jindoblu.bubblemazeadventure.R
 import com.jindoblu.bubblemazeadventure.data.local.shared.SharedServices
 import javax.inject.Inject
@@ -10,7 +9,7 @@ import javax.inject.Singleton
 
 @Singleton
 class GameMusicManagerImpl @Inject constructor(
-    private val context: Context,
+    context: Context,
     private val sharedServices: SharedServices
 ) : GlobalSoundManager, GameMusicManager {
 

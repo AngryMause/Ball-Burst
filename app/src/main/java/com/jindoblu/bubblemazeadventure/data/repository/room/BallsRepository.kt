@@ -1,4 +1,4 @@
-package com.jindoblu.bubblemazeadventure.repository.room
+package com.jindoblu.bubblemazeadventure.data.repository.room
 
 import com.jindoblu.bubblemazeadventure.R
 import com.jindoblu.bubblemazeadventure.data.local.room.BalsDao

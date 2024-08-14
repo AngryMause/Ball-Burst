@@ -60,13 +60,18 @@ fun Menu(openGame: () -> Unit, shop: () -> Unit) {
                 config.screenWidthDp.toPx - BALL_SIZE
             ),
             y = config.screenHeightDp.toPx - 60
-        ) else offsetAnimation.value, label = "",
+        ) else offsetAnimation.value.copy(
+            x = Random().nextInt(
+                config.screenWidthDp.toPx - BALL_SIZE
+            )
+        ), label = "",
         animationSpec = infiniteRepeatable(
             animation = tween(
                 durationMillis = 2000,
                 easing = LinearEasing
             ),
             repeatMode = RepeatMode.Restart,
+            initialStartOffset = StartOffset(300)
         )
     )
 
@@ -79,7 +84,7 @@ fun Menu(openGame: () -> Unit, shop: () -> Unit) {
             .fillMaxSize()
     ) {
         Text(
-            text = "Point: $score", color = Color.White,  modifier = Modifier
+            text = "Point: $score", color = Color.White, modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(20.dp), fontSize = 20.sp
         )

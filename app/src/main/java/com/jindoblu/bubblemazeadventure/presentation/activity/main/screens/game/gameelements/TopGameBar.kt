@@ -13,14 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.jindoblu.bubblemazeadventure.R
 import com.jindoblu.bubblemazeadventure.ui.theme.BackGroundShape
 
 @Composable
 fun TopGameBar(
     modifier: Modifier = Modifier,
     score: Int = 0,
-    level: Int = 1,
+//    level: Int = 1,
     ballImage: Int,
     ballLife: Int
 ) {
@@ -37,14 +36,14 @@ fun TopGameBar(
                 .padding(4.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
-        Text(
-            text = "Level: $level",
-            color = Color.Black,
-            modifier = Modifier
-                .background(Color.Magenta.copy(0.3f), BackGroundShape)
-                .padding(4.dp)
-        )
-        Spacer(modifier = Modifier.weight(1f))
+//        Text(
+//            text = "Level: $level",
+//            color = Color.Black,
+//            modifier = Modifier
+//                .background(Color.Magenta.copy(0.3f), BackGroundShape)
+//                .padding(4.dp)
+//        )
+//        Spacer(modifier = Modifier.weight(1f))
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier

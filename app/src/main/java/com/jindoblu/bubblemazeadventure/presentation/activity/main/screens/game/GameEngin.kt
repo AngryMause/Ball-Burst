@@ -3,7 +3,7 @@ package com.jindoblu.bubblemazeadventure.presentation.activity.main.screens.game
 import androidx.compose.ui.unit.IntOffset
 import com.jindoblu.bubblemazeadventure.data.local.shared.SharedServices
 import com.jindoblu.bubblemazeadventure.presentation.activity.main.screens.game.model.GameBallModel
-import com.jindoblu.bubblemazeadventure.repository.room.BallsRepository
+import com.jindoblu.bubblemazeadventure.data.repository.room.BallsRepository
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

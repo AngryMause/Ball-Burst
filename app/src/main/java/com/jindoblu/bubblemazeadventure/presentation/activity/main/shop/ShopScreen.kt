@@ -103,16 +103,17 @@ fun ShopScreen(back: () -> Unit, soundOnOff: (boolean: Boolean) -> Unit) {
                     .align(Alignment.CenterVertically),
                 textAlign = TextAlign.Start,
                 fontSize = 20.sp,
-                color = Color.Black
+                color = Color.White
             )
             Icon(
                 painter = painterResource(id = if (isSoundOn) R.drawable.baseline_volume_up_24 else R.drawable.baseline_volume_off_24),
+                tint = Color.Magenta,
                 contentDescription = "Sound on off ",
-                modifier = Modifier.clickable {
-                    Log.e("Test", "ShopScreen: isSoundOn $isSoundOn")
-                    isSoundOn = !isSoundOn
-                    soundOnOff(isSoundOn)
-                }
+                modifier = Modifier
+                    .clickable {
+                        isSoundOn = !isSoundOn
+                        soundOnOff(isSoundOn)
+                    }
             )
         }
         if (ballsList.value.isEmpty()) {
@@ -193,10 +194,10 @@ fun ShopScreen(back: () -> Unit, soundOnOff: (boolean: Boolean) -> Unit) {
                                 viewModel.byBall(onShowAlert.index)
                                 viewModel.saveNewPoint(points)
                             } else {
+                                onShowAlert = OnBay(index = -1, onShow = false)
                                 Toast.makeText(context, "Not enough points", Toast.LENGTH_SHORT)
                                     .show()
                             }
-                            onShowAlert = OnBay(index = -1, onShow = false)
                         } else {
                             onShowAlert = OnBay(index = -1, onShow = false)
                         }
@@ -219,7 +220,7 @@ fun ShopScreen(back: () -> Unit, soundOnOff: (boolean: Boolean) -> Unit) {
                                 viewModel.saveNewPoint(points)
                                 onShowAlert = OnBay(index = -1, onShow = false)
                             } else {
-
+                                onShowAlert = OnBay(index = -1, onShow = false)
                                 Toast.makeText(context, "Not enough points", Toast.LENGTH_SHORT)
                                     .show()
                             }
@@ -269,7 +270,8 @@ fun BallListItem(ball: BallsModel, level: Int, onBay: () -> Unit, onSelect: () -
             }
     ) {
         Text(
-            text = if (ball.price <= 0) "" else "price: ${ball.price}",
+            text = if (ball.price <= 0) "" else "Price: ${ball.price}",
+            color = Color.White,
             modifier = Modifier
                 .padding(10.dp)
                 .align(Alignment.TopStart)
@@ -277,7 +279,7 @@ fun BallListItem(ball: BallsModel, level: Int, onBay: () -> Unit, onSelect: () -
         Text(
             text = "Lvl $level",
             fontSize = 13.sp,
-            color = Color.Black,
+            color = Color.White,
             modifier = Modifier
                 .padding(10.dp)
                 .size(30.dp)
@@ -331,6 +333,7 @@ fun WallpaperItem(wallpaper: WalPapersModel, onBay: () -> Unit, onSelect: () -> 
     ) {
         Text(
             text = if (wallpaper.price <= 0) "" else "price: ${wallpaper.price}",
+            color = Color.White,
             modifier = Modifier
                 .padding(10.dp)
         )

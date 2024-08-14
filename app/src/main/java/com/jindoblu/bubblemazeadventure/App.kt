@@ -1,8 +1,8 @@
 package com.jindoblu.bubblemazeadventure
 
 import android.app.Application
-import com.jindoblu.bubblemazeadventure.repository.room.BallsRepository
-import com.jindoblu.bubblemazeadventure.repository.room.WallPapersRepository
+import com.jindoblu.bubblemazeadventure.data.repository.room.BallsRepository
+import com.jindoblu.bubblemazeadventure.data.repository.room.WallPapersRepository
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
